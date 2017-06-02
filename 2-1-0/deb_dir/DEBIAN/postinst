@@ -1,0 +1,15 @@
+#!/bin/bash -x
+
+#replace parameters
+sed -i 's/__HOSTNAME__/'"$(hostname -I)"'/g' /etc/confd/templates/elasticsearch.tmpl
+
+#replace bucketname with env vairable
+sed -i 's/_ELASTICSEARCH_BUCKET_/'"$ELASTICSEARCH_BUCKET"'/g' /etc/confd/conf.d/*.toml
+
+#restart confd to reflect new conf.d files
+sudo /etc/init.d/fk-config-service-confd restart
+
+#install the basic plugins useful for all
+/usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head
+/usr/share/elasticsearch/bin/plugin -install lukas-vlcek/bigdesk
+/usr/share/elasticsearch/bin/plugin -install karmi/elasticsearch-paramedic

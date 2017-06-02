@@ -1,0 +1,31 @@
+#! /bin/bash -e
+set +x
+
+#restart confd to fetch latest value from bucket
+function restartConfd() {
+
+	if [ -z $ES_COSMOS_PLUGIN_BUCKET ]; then
+		ES_COSMOS_PLUGIN_BUCKET="es-cosmos-plugin"
+	fi
+	
+	echo -e "\033[32m ES-COSMOS-PLUGIN bucket = $ES_COSMOS_PLUGIN_BUCKET \033[0m"
+	sudo sed -i -e "s/_BUCKET_/$ES_COSMOS_PLUGIN_BUCKET/g" /etc/confd/conf.d/es-cosmos-plugin.toml
+    sudo chmod 755 /etc/confd/conf.d/es-cosmos-plugin.toml
+	if [ -x "/etc/init.d/fk-config-service-confd" ]; then
+    	echo "Restating Confd" 
+    	sudo /etc/init.d/fk-config-service-confd restart || true
+    	sleep 15
+    	echo -e "\033[32m-----  config.yml config after restart confd-----\033[0m"
+	    cat /usr/share/es-cosmos-plugin/config.yml
+    fi
+}
+
+restartConfd
+    
+echo -e "\033[32m ================================\033[0m"
+echo -e "\033[32m BUILD Completed on $HOSTNAME\033[0m"
+echo -e "\033[32m ================================\033[0m"
+
+chown root:root /etc/cron.d/fk-es-cosmos-plugin
+
+exit 0

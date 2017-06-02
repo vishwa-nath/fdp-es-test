@@ -1,0 +1,266 @@
+---
+cluster.name: {{getv "/cluster.name"}}
+node.name: __HOSTNAME__ 
+path.data: {{getv "/path.data"}}
+path.logs: {{getv "/path.logs"}}
+
+{{ if exists "/node.master" }}
+node.master: {{ getv "/node.master" }}
+{{ end }}
+{{ if exists "/node.data" }}
+node.data: {{ getv "/node.data" }}
+{{ end }}
+{{ if exists "/node.ingest" }}
+node.ingest: {{ getv "/node.ingest" }}
+{{ end }}
+{{ if exists "/http.enabled" }}
+http.enabled: {{ getv "/http.enabled" }}
+{{ end }}
+{{ if exists "/bootstrap.memory_lock" }}
+bootstrap.memory_lock: {{getv "/bootstrap.memory_lock"}}
+{{ end }}
+{{ if exists "/network.host" }}
+network.host: {{ getv "/network.host" }}
+{{ end }}
+
+{{ if exists "/action.disable_delete_all_indices" }}
+action.disable_delete_all_indices: {{getv "/action.disable_delete_all_indices"}}
+{{ end }}
+
+{{ if exists "/index.refresh_interval" }}
+index.refresh_interval: {{getv "/index.refresh_interval"}}
+{{ end }}
+
+{{ if exists "/index.translog.flush_threshold_size" }}
+index.translog.flush_threshold_size: {{getv "/index.translog.flush_threshold_size"}}
+{{ end }}
+
+##########################################
+# Cache sizes/breakers related configuration starts
+
+{{ if exists "/indices.fielddata.cache.size" }}
+indices.fielddata.cache.size: {{getv "/indices.fielddata.cache.size"}}
+{{ end }}
+
+{{ if exists "/indices.cache.filter.size" }}
+indices.cache.filter.size: {{getv "/indices.cache.filter.size"}}
+{{ end }}
+
+{{ if exists "/indices.breaker.total.limit" }}
+indices.breaker.total.limit: {{getv "/indices.breaker.total.limit"}}
+{{ end }}
+
+{{ if exists "/indices.breaker.fielddata.limit" }}
+indices.breaker.fielddata.limit: {{getv "/indices.breaker.fielddata.limit"}}
+{{ end }}
+
+{{ if exists "/indices.breaker.request.limit" }}
+indices.breaker.request.limit: {{getv "/indices.breaker.request.limit"}}
+{{ end }}
+
+# Cache sizes related configuration ends
+########################################
+
+########################################
+# Recovery related configuration starts
+
+{{ if exists "/cluster.routing.allocation.cluster_concurrent_rebalance" }}
+cluster.routing.allocation.cluster_concurrent_rebalance: {{getv "/cluster.routing.allocation.cluster_concurrent_rebalance"}}
+{{ end }}
+
+{{ if exists "/cluster.routing.allocation.node_initial_primaries_recoveries" }}
+cluster.routing.allocation.node_initial_primaries_recoveries: {{getv "/cluster.routing.allocation.node_initial_primaries_recoveries"}}
+{{ end }}
+
+{{ if exists "/cluster.routing.allocation.node_concurrent_recoveries" }}
+cluster.routing.allocation.node_concurrent_recoveries: {{getv "/cluster.routing.allocation.node_concurrent_recoveries"}}
+{{ end }}
+
+{{ if exists "/cluster.routing.allocation.enable" }}
+cluster.routing.allocation.enable: {{getv "/cluster.routing.allocation.enable"}}
+{{ end }}
+
+{{ if exists "/indices.recovery.concurrent_streams" }}
+indices.recovery.concurrent_streams: {{getv "/indices.recovery.concurrent_streams"}}
+{{ end }}
+
+{{ if exists "/indices.recovery.max_bytes_per_sec" }}
+indices.recovery.max_bytes_per_sec: {{getv "/indices.recovery.max_bytes_per_sec"}}
+{{ end }}
+
+{{ if exists "/index.unassigned.node_left.delayed_timeout" }}
+index.unassigned.node_left.delayed_timeout: {{getv "/index.unassigned.node_left.delayed_timeout"}}
+{{ end }}
+
+
+# Recovery related configuration ends
+########################################
+
+########################################
+# Discovery related configuration starts
+
+discovery.zen.ping.unicast.hosts:
+  {{range jsonArray (getv "/discovery.zen.ping.unicast.hosts")}}
+   - {{.}}
+   {{end}}
+
+{{ if exists "/discovery.zen.minimum_master_nodes" }}
+discovery.zen.minimum_master_nodes: {{getv "/discovery.zen.minimum_master_nodes"}}
+{{ end }}
+
+{{ if exists "/discovery.zen.fd.ping_interval" }}
+discovery.zen.fd.ping_interval: {{getv "/discovery.zen.fd.ping_interval"}}
+{{ end }}
+
+{{ if exists "/discovery.zen.fd.ping_timeout" }}
+discovery.zen.fd.ping_timeout: {{getv "/discovery.zen.fd.ping_timeout"}}
+{{ end }}
+
+{{ if exists "/discovery.zen.fd.ping_retries" }}
+discovery.zen.fd.ping_retries: {{getv "/discovery.zen.fd.ping_retries"}}
+{{ end }}
+
+{{ if exists "/discovery.zen.ping_timeout" }}
+discovery.zen.ping_timeout: {{getv "/discovery.zen.ping_timeout"}}
+{{ end }}
+
+{{ if exists "/discovery.zen.join_timeout" }}
+discovery.zen.join_timeout: {{getv "/discovery.zen.join_timeout"}}
+{{ end }}
+
+# Discovery related configuration ends
+######################################
+
+######################################
+# Gateway related configuration starts
+
+{{ if exists "/gateway.expected_nodes" }}
+gateway.expected_nodes: {{getv "/gateway.expected_nodes"}}
+{{ end }}
+
+{{ if exists "/gateway.recover_after_nodes" }}
+gateway.recover_after_nodes: {{getv "/gateway.recover_after_nodes"}}
+{{ end }}
+
+{{ if exists "/gateway.recover_after_time" }}
+gateway.recover_after_time: {{getv "/gateway.recover_after_time"}}
+{{ end }}
+
+{{ if exists "/gateway.recover_after_data_nodes" }}
+gateway.recover_after_data_nodes: {{getv "/gateway.recover_after_data_nodes"}}
+{{ end }}
+
+{{ if exists "/gateway.recover_after_master_nodes" }}
+gateway.recover_after_master_nodes: {{getv "/gateway.recover_after_master_nodes"}}
+{{ end }}
+
+# Gateway related configuration ends
+####################################
+
+#########################################
+# threadpool related configuration starts
+
+{{ if exists "/threadpool.index.type" }}
+threadpool.index.type: {{getv "/threadpool.index.type"}}
+threadpool.index.size: {{getv "/threadpool.index.size"}}
+threadpool.index.queue_size: {{getv "/threadpool.index.queue_size"}}
+{{ end }}
+
+{{ if exists "/threadpool.bulk.type" }}
+threadpool.bulk.type: {{getv "/threadpool.index.type"}}
+threadpool.bulk.size: {{getv "/threadpool.bulk.size"}}
+threadpool.bulk.queue_size: {{getv "/threadpool.bulk.queue_size"}}
+{{ end }}
+
+{{ if exists "/threadpool.search.type" }}
+threadpool.search.type: {{getv "/threadpool.index.type"}}
+threadpool.search.size: {{getv "/threadpool.search.size"}}
+threadpool.search.queue_size: {{getv "/threadpool.search.queue_size"}}
+{{ end }}
+
+{{ if exists "/threadpool.suggest.type" }}
+threadpool.suggest.type: {{getv "/threadpool.index.type"}}
+threadpool.suggest.size: {{getv "/threadpool.suggest.size"}}
+threadpool.suggest.queue_size: {{getv "/threadpool.suggest.queue_size"}}
+{{ end }}
+
+# threadpool related configuration ends
+#######################################
+
+#######################################
+# logging related configuration starts
+
+{{ if exists "/index.search.slowlog.threshold.query.warn" }}
+index.search.slowlog.threshold.query.warn: {{getv "/index.search.slowlog.threshold.query.warn"}}
+{{ end }}
+
+{{ if exists "/index.search.slowlog.threshold.query.info" }}
+index.search.slowlog.threshold.query.info: {{getv "/index.search.slowlog.threshold.query.info"}}
+{{ end }}
+
+{{ if exists "/index.search.slowlog.threshold.query.debug" }}
+index.search.slowlog.threshold.query.debug: {{getv "/index.search.slowlog.threshold.query.debug"}}
+{{ end }}
+
+{{ if exists "/index.search.slowlog.threshold.query.trace" }}
+index.search.slowlog.threshold.query.trace: {{getv "/index.search.slowlog.threshold.query.trace"}}
+{{ end }}
+
+{{ if exists "/index.search.slowlog.threshold.fetch.warn" }}
+index.search.slowlog.threshold.fetch.warn: {{getv "/index.search.slowlog.threshold.fetch.warn"}}
+{{ end }}
+
+{{ if exists "/index.search.slowlog.threshold.fetch.info" }}
+index.search.slowlog.threshold.fetch.info: {{getv "/index.search.slowlog.threshold.fetch.info"}}
+{{ end }}
+
+{{ if exists "/index.search.slowlog.threshold.fetch.debug" }}
+index.search.slowlog.threshold.fetch.debug: {{getv "/index.search.slowlog.threshold.fetch.debug"}}
+{{ end }}
+
+{{ if exists "/index.search.slowlog.threshold.fetch.trace" }}
+index.search.slowlog.threshold.fetch.trace: {{getv "/index.search.slowlog.threshold.fetch.trace"}}
+{{ end }}
+
+{{ if exists "/index.indexing.slowlog.threshold.index.warn" }}
+index.indexing.slowlog.threshold.index.warn: {{getv "/index.indexing.slowlog.threshold.index.warn"}}
+{{ end }}
+
+{{ if exists "/index.indexing.slowlog.threshold.index.info" }}
+index.indexing.slowlog.threshold.index.info: {{getv "/index.indexing.slowlog.threshold.index.info"}}
+{{ end }}
+
+{{ if exists "/index.indexing.slowlog.threshold.index.debug" }}
+index.indexing.slowlog.threshold.index.debug: {{getv "/index.indexing.slowlog.threshold.index.debug"}}
+{{ end }}
+
+{{ if exists "/index.indexing.slowlog.threshold.index.trace" }}
+index.indexing.slowlog.threshold.index.trace: {{getv "/index.indexing.slowlog.threshold.index.trace"}}
+{{ end }}
+
+{{ if exists "/monitor.jvm.gc.ParNew.warn" }}
+monitor.jvm.gc.ParNew.warn: {{getv "/monitor.jvm.gc.ParNew.warn"}}
+{{ end }}
+
+{{ if exists "/monitor.jvm.gc.ParNew.info" }}
+monitor.jvm.gc.ParNew.info: {{getv "/monitor.jvm.gc.ParNew.info"}}
+{{ end }}
+
+{{ if exists "/monitor.jvm.gc.ParNew.debug" }}
+monitor.jvm.gc.ParNew.debug: {{getv "/monitor.jvm.gc.ParNew.debug"}}
+{{ end }}
+
+{{ if exists "/monitor.jvm.gc.ConcurrentMarkSweep.warn" }}
+monitor.jvm.gc.ConcurrentMarkSweep.warn: {{getv "/monitor.jvm.gc.ConcurrentMarkSweep.warn"}}
+{{ end }}
+
+{{ if exists "/monitor.jvm.gc.ConcurrentMarkSweep.info" }}
+monitor.jvm.gc.ConcurrentMarkSweep.info: {{getv "/monitor.jvm.gc.ConcurrentMarkSweep.info"}}
+{{ end }}
+
+{{ if exists "/monitor.jvm.gc.ConcurrentMarkSweep.debug" }}
+monitor.jvm.gc.ConcurrentMarkSweep.debug: {{getv "/monitor.jvm.gc.ConcurrentMarkSweep.debug"}}
+{{ end }}
+
+# logging related configuration ends
+####################################

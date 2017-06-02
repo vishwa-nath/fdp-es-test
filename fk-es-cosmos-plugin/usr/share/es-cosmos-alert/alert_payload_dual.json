@@ -1,0 +1,40 @@
+{
+  "name": "Test_rule",
+  "schedule": "*/5 * * * *",
+  "tags": [
+    "dsp-santa-bernard-es.tag_Bernard_ES"
+  ],
+  "checks": [
+    {
+      "description": "Warning Check",
+      "booleanExpression": "$Xmax/$Ymax > 0.8",
+      "sev": "1"
+    },
+    {
+      "description": "Critical Check",
+      "booleanExpression": "$Xmax/$Ymax > 0.9",
+      "sev": "2"
+    }
+  ],
+  "dataSerieses": {
+    "x": {
+      "source": "cosmosv2",
+      "query": "dsp-santa-bernard-es.bernard.nodes.breakers.fielddata.estimated_size_in_bytes"
+    },
+    "y": {
+      "source": "cosmosv2",
+      "query": "dsp-santa-bernard-es.bernard.nodes.breakers.fielddata.limit_size_in_bytes"
+    }
+  },
+  "ignoreEmptyDataPoints": false,
+  "variables": {
+    "Xmax": {
+      "value": "$max.x",
+      "publish": true
+    },
+    "Ymax": {
+      "value": "$max.y",
+      "publish": true
+    }
+  }
+}

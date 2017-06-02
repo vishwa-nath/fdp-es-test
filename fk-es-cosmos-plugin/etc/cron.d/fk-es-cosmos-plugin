@@ -1,0 +1,1 @@
+* * * * * root python /usr/share/es-cosmos-plugin/es-cosmos-plugin.py 2>/tmp/es-cosmos-plugin-errors.log | /usr/bin/cosmos

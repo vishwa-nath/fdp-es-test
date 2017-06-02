@@ -1,0 +1,8 @@
+Package: _PACKAGE_
+Version: 1._VERSION_
+Architecture: all
+Section: flipkart/es-cosmos-plugin
+Priority: standard
+Depends: python-requests,python-yaml
+Maintainer: Shubham Saxena <shubham.saxena@flipkart.com>
+Description: Elastic Search Stats Metric Collector for Cosmos

@@ -1,0 +1,5 @@
+[template]
+prefix="/_ELASTICSEARCH_BUCKET_"
+src = "default.tmpl"
+dest = "/etc/default/elasticsearch"
+keys = ["/ES_HEAP_SIZE", "/ES_HEAP_NEWSIZE", "/ES_USE_GC_LOGGING", "/ES_JAVA_OPTS", "/ES_GC_LOG_FILE"]

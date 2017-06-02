@@ -1,0 +1,32 @@
+{
+  "name": "Alert_Test",
+  "schedule": "*/5 * * * *",
+  "tags": [
+    "dsp-santa-bernard-es.tag_Bernard_ES"
+  ],
+  "checks": [
+    {
+      "description": "Warning Check",
+      "booleanExpression": "$Xmax < 1",
+      "sev": "1"
+    },
+    {
+      "description": "Critical Check ",
+      "booleanExpression": "$Xmax < 0",
+      "sev": "2"
+    }
+  ],
+  "dataSerieses": {
+    "x": {
+      "source": "cosmosv2",
+      "query": "start=15m-ago&m=sum:dsp-santa-bernard-es.bernard.cluster.status"
+    }
+  },
+  "ignoreEmptyDataPoints": false,
+  "variables": {
+    "x": {
+      "value": "$max.x",
+      "publish": true
+    }
+  }
+}

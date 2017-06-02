@@ -1,0 +1,17 @@
+# Heap Size (defaults to 256m min, 1g max)
+ES_HEAP_SIZE={{getv "/ES_HEAP_SIZE"}}
+
+# Heap new generation
+ES_HEAP_NEWSIZE={{getv "/ES_HEAP_NEWSIZE"}}
+
+{{ if exists "/ES_USE_GC_LOGGING" }}
+ES_USE_GC_LOGGING: {{ getv "/ES_USE_GC_LOGGING" }}
+{{ end }}
+
+{{ if exists "/ES_JAVA_OPTS" }}
+ES_JAVA_OPTS: {{ getv "/ES_JAVA_OPTS" }}
+{{ end }}
+
+{{ if exists "/ES_GC_LOG_FILE" }}
+ES_GC_LOG_FILE: {{ getv "/ES_GC_LOG_FILE" }}
+{{ end }}

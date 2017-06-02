@@ -1,0 +1,5 @@
+[template]
+prefix = "/_BUCKET_"
+src = "es-cosmos-plugin.tmpl"
+dest = "/usr/share/es-cosmos-plugin/config.yml"
+keys = ["/es-cosmos-plugin.node_stats.metrics", "/es-cosmos-plugin.port_number"]

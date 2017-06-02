@@ -1,0 +1,2 @@
+metrics: jvm,thread_pool,os,indices,process,transport,fs,breaker
+port_number: 9200
