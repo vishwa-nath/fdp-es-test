@@ -1,0 +1,95 @@
+#!/bin/bash
+
+ERROR="Usage `basename $0` <env> <package> [-nodeploy/-nobuild]"
+[ $# -lt 2 ] && echo $ERROR && exit 1
+[ $# -gt 2 ] && [ $3 != "-nodeploy" ] && [ $3 != "-nobuild" ] && echo $ERROR && exit 1
+
+DOMAIN=$1
+PACKAGE=$2
+DEPLOY=""
+BUILD=""
+BRANCH=""
+
+for value in $@
+do
+	case $value in
+		-nobuild)
+			BUILD=$value
+		;;
+	esac
+done
+
+shift 2
+
+case $DOMAIN in 
+    nm|eng|sb|vl|stagech|sb-ch|stage) 
+	TARGET=${DOMAIN}
+    ;; 
+    *) 
+	echo "Target must be nm/eng/sb/vl/stagech/sb-ch/stage" && exit 2
+    ;; 
+esac
+
+function proceed(){
+	echo "Doing a git fetch"
+	git fetch
+	BRANCH=$( git rev-parse --abbrev-ref HEAD)
+	case $DOMAIN in
+		nm)
+		#	BRANCH='master'	
+		;;
+	esac
+	
+	remotehead=$( cat .git/refs/remotes/gitcorp/$BRANCH )
+	localhead=$( git rev-parse HEAD)
+	
+	echo "Remoted origin master head commit id " $remotehead
+	echo "local branch head commit id " $localhead
+	
+	if [ $remotehead == $localhead ]
+		then
+			echo "Good to go"
+		else
+			echo "You have stale or unpushed code. Can't deploy" && exit 2
+	fi
+}
+
+proceed 
+
+case $PACKAGE in
+    1-2-1)
+	TAG=release/fk-3p-elasticsearch-${PACKAGE}/${DOMAIN}-$(date +%Y%m%d-%H%M)${1}
+    ;;
+    1-4-5)
+	TAG=release/fk-3p-elasticsearch-${PACKAGE}/${DOMAIN}-$(date +%Y%m%d-%H%M)${1}
+    ;;
+    1-5-2)
+	TAG=release/fk-3p-elasticsearch-${PACKAGE}/${DOMAIN}-$(date +%Y%m%d-%H%M)${1}
+    ;;
+    1-7-1)
+	TAG=release/fk-3p-elasticsearch-${PACKAGE}/${DOMAIN}-$(date +%Y%m%d-%H%M)${1}
+    ;;
+    2-1-0)
+	TAG=release/fk-3p-elasticsearch-${PACKAGE}/${DOMAIN}-$(date +%Y%m%d-%H%M)${1}
+    ;;
+    2-2-0)
+	TAG=release/fk-3p-elasticsearch-${PACKAGE}/${DOMAIN}-$(date +%Y%m%d-%H%M)${1}
+    ;;
+    fk-es-cosmos-plugin)
+	TAG=release/${PACKAGE}/${DOMAIN}-$(date +%Y%m%d-%H%M)${1}
+    ;;
+    *)
+ 	echo "Valid package options for 3p-elasticsearch build are 1-2-1, 1-4-5, 1-5-2, 1-7-1, 2-1-0, 2-2-0, fk-es-cosmos-plugin" && exit 3
+    ;;
+esac
+
+echo $TAG
+echo $BUILD
+
+if [ "$BUILD" != "-nobuild" ]
+then	
+	git tag -m "Promoting to $DOMAIN." $TAG
+	git push --tags gitcorp
+else
+	echo "Not pushing package to fk-ops-build as explicitly mentioned"
+fi

@@ -1,0 +1,28 @@
+[
+       {
+            "repoName" : "fk-3p-elasticsearch-5-0-2",
+            "repoVersion" : 2,
+            "repoReferenceType" : "HEAD"
+        },
+       {
+            "repoName": "oracle-java",
+            "repoVersion": 4,
+            "repoReferenceType": "EXACT"
+       },
+       {
+            "repoName": "fk-config-service-confd",
+            "repoVersion": 23,
+            "repoReferenceType": "EXACT"
+       },
+       {
+            "repoName": "fk-etc-hosts-confd-utility",
+            "repoVersion": 17,
+            "repoReferenceType": "EXACT"
+       },
+       {
+            "repoName": "fdp-es-memorycheck",
+            "repoVersion": 2,
+            "repoReferenceType": "EXACT"
+       }
+]
+

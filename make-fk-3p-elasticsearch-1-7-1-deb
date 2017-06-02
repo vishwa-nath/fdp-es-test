@@ -1,0 +1,64 @@
+#!/bin/bash -ex
+
+echo "Starting build"
+
+function die() {
+    echo "ERROR: $1" >&2
+    echo "Aborting." >&2
+    exit 1
+}
+
+function cpp() {
+	mkdir -p "${@:$#}"
+	cp -rf "$@"
+}
+
+[ -n "$LOCAL_DIR" ]	|| die "No base dir specified."
+[ -n "$TARGET" ]	|| die "No target environment (eng, sb, nm etc.) specified."
+[ -n "$PACKAGE" ]	|| die "No package name specified."
+[ -d "$LOCAL_DIR" ]	|| die "Base dir '$LOCAL_DIR' does not exist."
+
+cd $LOCAL_DIR
+
+DEB_DIR=$LOCAL_DIR/deb
+mkdir -p $DEB_DIR
+
+# extract all the directories that needs to be installed
+curl -O http://mapi-d42store-a-0006.nm.flipkart.com:8080/repos/elasticsearch-vanilla/4/elasticsearch-1.7.1.deb
+dpkg -x elasticsearch*.deb $DEB_DIR
+
+# extract the DEBIAN directory that contains control file and other scripts
+mkdir -p $DEB_DIR/DEBIAN
+dpkg -e elasticsearch*.deb $DEB_DIR/DEBIAN
+
+# prepend custom commands in postinst
+cat $DEB_DIR/DEBIAN/postinst >> $LOCAL_DIR/1-7-1/deb_dir/DEBIAN/postinst
+mv $LOCAL_DIR/1-7-1/deb_dir/DEBIAN/postinst $DEB_DIR/DEBIAN/postinst
+
+#confd hoopla
+mkdir -p $DEB_DIR/etc/confd/conf.d
+mkdir -p $DEB_DIR/etc/confd/templates
+cp 1-7-1/config/*.toml $DEB_DIR/etc/confd/conf.d
+cp 1-7-1/config/*.tmpl $DEB_DIR/etc/confd/templates
+
+#copy static files in source code
+cp 1-7-1/static/* $DEB_DIR/etc/elasticsearch/
+
+
+# extract version
+ES_VERSION=$(cat $DEB_DIR/DEBIAN/control | grep Version | sed -e 's/Version: *\(.*\)$/\1/g')
+sed -i -e's/Package: .*$/Package: _PACKAGE_/' $DEB_DIR/DEBIAN/control
+sed -i -e's/Version: .*$/Version: 1._VERSION_/' $DEB_DIR/DEBIAN/control
+sed -i -e's/Section: .*$/Section: flipkart\/3p/' $DEB_DIR/DEBIAN/control
+sed -i -e's/Priority: .*$/Priority: standard/' $DEB_DIR/DEBIAN/control
+sed -i -e's/Maintainer: .*$/Maintainer: elasticsearch-sme@flipkart.com/' $DEB_DIR/DEBIAN/control
+sed -i -e's/\(Depends: .*$\)/\1, curl, fk-config-service-confd, oracle-j2sdk1.7/' $DEB_DIR/DEBIAN/control
+sed -i -e"s/\(Description: *\)\(.*\)/\1(Providing $ES_VERSION) \2/" $DEB_DIR/DEBIAN/control
+echo "Conflicts: elasticsearch-server" >>$DEB_DIR/DEBIAN/control
+echo "Provides: elasticsearch-server" >>$DEB_DIR/DEBIAN/control
+
+for f in $DEB_DIR/DEBIAN/* $DEB_DIR/etc/elasticsearch/* ; do
+	[ -f "$f" ] && sed -i -e "s/_PACKAGE_/$PACKAGE/g" "$f"
+done
+
+echo "Build successful"

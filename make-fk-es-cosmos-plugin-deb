@@ -1,0 +1,34 @@
+#! /bin/bash -e
+
+echo "Starting Build"
+
+function die() {
+    echo "ERROR: $1" >&2
+    echo "Aborting." >&2
+    exit 1
+}
+
+function cpp() {
+	mkdir -p "${@:$#}"
+	cp -rf "$@"
+}
+
+[ -n "$LOCAL_DIR" ]	|| die "No base dir specified."
+[ -n "$TARGET" ]	|| die "No target environment (eng, sb, nm etc.) specified."
+[ -n "$PACKAGE" ]	|| die "No package name specified."
+[ -d "$LOCAL_DIR" ]	|| die "Base dir '$LOCAL_DIR' does not exist."
+
+#replace repo name
+sed -i -e "s/fk-3p-elasticsearch/$PACKAGE/g" $LOCAL_DIR/.build.json
+
+cd $LOCAL_DIR
+
+DEB_DIR=$LOCAL_DIR/deb
+mkdir -p $DEB_DIR
+
+#creating folder struture and copy files
+cpp $PACKAGE/deb_dir/DEBIAN $DEB_DIR/
+cpp $PACKAGE/etc $DEB_DIR/
+cpp $PACKAGE/usr $DEB_DIR/
+
+echo "Build Successful"
